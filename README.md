@@ -1,34 +1,27 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+## To See Issue
 
-First, run the development server:
 
 ```bash
-npm run dev
+npm run build
 # or
-yarn dev
+yarn build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then look inside the `.next` folder and you'll see the same `quarry` image twice.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+   * Server: `.next\server\chunks\static\image\components\quarry.766f8eca427db5482ce887e319fcde80.png`
+   * Static: `.next\static\image\components\quarry.766f8eca427db5482ce887e319fcde80.png`
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.tsx`.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Problem 
 
-## Learn More
+The images referenced inside the Server subdirectory aren't used. Images are referenced using the `.next\static` path. But it gets worse. For people using `Vercel` to deploy their next apps, the static images can quickly add up and you'll be larger then the 50MB Compressed / 250MB uncompressed requirements as it appears to bundle any image that's used on a `SSG` page into the `.next\server\chunks...` location. 
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Solution
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+   * **A** - Ensure that the webpack 5 bundler uses the `.next\static` route for image assets.
+   * **B** - Provide a flag or configuration parameter to allow user to decide where all image assets go. 
+   * **C** - Something else?
